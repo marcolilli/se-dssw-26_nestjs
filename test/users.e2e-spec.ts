@@ -9,9 +9,27 @@ describe('UsersController (e2e)', () => {
   let app: INestApplication<App>;
 
   const mockUsers: User[] = [
-    { id: 10, username: 'charlie', isAdmin: false, isActive: true },
-    { id: 20, username: 'alice', isAdmin: true, isActive: false },
-    { id: 30, username: 'bravo', isAdmin: false, isActive: false },
+    {
+      id: 10,
+      username: 'charlie',
+      isAdmin: false,
+      isActive: true,
+      password: '_',
+    },
+    {
+      id: 20,
+      username: 'alice',
+      isAdmin: true,
+      isActive: false,
+      password: '_',
+    },
+    {
+      id: 30,
+      username: 'bravo',
+      isAdmin: false,
+      isActive: false,
+      password: '_',
+    },
   ];
 
   beforeEach(async () => {

@@ -7,7 +7,14 @@ describe('UsersService filter', () => {
     const result = usersService.filterUsers('username', 'john_doe');
 
     expect(result).toStrictEqual([
-      { id: 1, username: 'john_doe', isAdmin: false, isActive: true },
+      {
+        id: 1,
+        username: 'john_doe',
+        isAdmin: false,
+        isActive: true,
+        password:
+          'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+      },
     ]);
   });
 
@@ -15,8 +22,22 @@ describe('UsersService filter', () => {
     const result = usersService.filterUsers('isAdmin', false);
 
     expect(result).toStrictEqual([
-      { id: 1, username: 'john_doe', isAdmin: false, isActive: true },
-      { id: 3, username: 'inactive_user', isAdmin: false, isActive: false },
+      {
+        id: 1,
+        username: 'john_doe',
+        isAdmin: false,
+        isActive: true,
+        password:
+          'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+      },
+      {
+        id: 3,
+        username: 'inactive_user',
+        isAdmin: false,
+        isActive: false,
+        password:
+          'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+      },
     ]);
   });
 

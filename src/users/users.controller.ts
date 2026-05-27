@@ -16,12 +16,41 @@ export interface User {
   username: string | null | undefined;
   isAdmin: boolean | null | undefined;
   isActive: boolean | null | undefined;
+  password: string;
+}
+
+type PublicUser = Omit<User, 'password'>;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function toPublic({ password: _, ...rest }: User): PublicUser {
+  return rest;
 }
 
 export const users: User[] = [
-  { id: 1, username: 'john_doe', isAdmin: false, isActive: true },
-  { id: 2, username: 'admin_user', isAdmin: true, isActive: true },
-  { id: 3, username: 'inactive_user', isAdmin: false, isActive: false },
+  {
+    id: 1,
+    username: 'john_doe',
+    isAdmin: false,
+    isActive: true,
+    password:
+      'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+  },
+  {
+    id: 2,
+    username: 'admin_user',
+    isAdmin: true,
+    isActive: true,
+    password:
+      'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+  },
+  {
+    id: 3,
+    username: 'inactive_user',
+    isAdmin: false,
+    isActive: false,
+    password:
+      'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
+  },
 ];
 
 @Controller('users')
@@ -43,7 +72,7 @@ export class UsersController {
   findAll(
     @Query('filter') filter?: string,
     @Query('sort') sort?: string,
-  ): User[] {
+  ): PublicUser[] {
     console.log(`Filter: ${filter}, Sort: ${sort}`);
 
     let result = [...users];
@@ -62,23 +91,23 @@ export class UsersController {
       });
     }
 
-    return result;
+    return result.map(toPublic);
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Get a user by ID',
   })
-  findOne(@Param() params: Record<string, string>): User | undefined {
+  findOne(@Param() params: Record<string, string>): PublicUser | undefined {
     const user = users.find((user) => user.id === Number(params.id));
-    return user;
+    return user ? toPublic(user) : undefined;
   }
 
   @Post()
   @ApiOperation({
     summary: 'Create a new user',
   })
-  create(@Body() userData: Omit<User, 'id'>): User {
+  create(@Body() userData: Omit<User, 'id'>): PublicUser {
     const newUser: User = {
       id: users.length + 1,
       ...userData,
@@ -86,7 +115,7 @@ export class UsersController {
 
     users.push(newUser);
 
-    return newUser;
+    return toPublic(newUser);
   }
 
   @Put(':id')
@@ -96,7 +125,7 @@ export class UsersController {
   replace(
     @Param() params: Record<string, string>,
     @Body() userData: Partial<Omit<User, 'id'>>,
-  ): User | undefined {
+  ): PublicUser | undefined {
     const user = users.find((user) => user.id === Number(params.id));
 
     if (user) {
@@ -106,7 +135,7 @@ export class UsersController {
         isActive: userData.isActive ?? null,
       });
 
-      return user;
+      return toPublic(user);
     }
   }
 
@@ -117,12 +146,12 @@ export class UsersController {
   updateIsActive(
     @Param() params: Record<string, string>,
     @Body() userData: Pick<User, 'isActive'>,
-  ): User | undefined {
+  ): PublicUser | undefined {
     const user = users.find((user) => user.id === Number(params.id));
 
     if (user) {
       user.isActive = userData.isActive;
-      return user;
+      return toPublic(user);
     }
   }
 
